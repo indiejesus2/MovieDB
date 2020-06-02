@@ -37,8 +37,7 @@ class Movie
     end
 
     def self.find_by_id(i)
-        i = i.to_i
-        self.all.find{|movie| return movie.overview if movie.index. == i}
+        self.all.each{|movie| puts movie.overview if movie.index.to_s == i}
     end
 
 end

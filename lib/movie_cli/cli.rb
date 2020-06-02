@@ -15,54 +15,29 @@ class CLI
         Api.get_movies(input)
         print_names
         selection
-        id = response
+        id = gets.strip
         menu
+        response = gets.strip
+
+
         case response
-        # binding.pry
-            when "plot"
-                print_overview(id)
-            when "cast"
-                print_cast(id)
-            end
+        when "plot"
+            print_overview(id)
+        when "cast"
+            print_cast(id)
+        when "crew"
+            print_crew(id)
+        when "recommendations"
+            recommended_movies(id)
+        when "similar movie"
+            similar_movies(id)
+        end
+        # end
         continue
         response
-        # binding.pry
-        # binding.pry
-        # while Movie.page != Movie.pages
-        #     puts "Make selection or list more?"
-        #     response = gets.strip
-        #     if response.include?("more")
-        #         Api.next_page(input)
-        #         print_names
-        #     elsif response.include?("selection")
-        #         puts "Make your selection by ID"
-        #         response = gets.strip
-        #         # print_overview(response)
-        #         Api.find_movie(response)
-        #         recommended_movies
-        #         # Movie.find_by_id(response)
-        #     end
-        #     if Movie.page >= 2
-        #         puts "Make selection, list more, or list less?"
-        #         response = gets.strip
-        #         if response.include?("more")
-        #             Api.next_page(input)
-        #             print_names
-        #         elsif response.include?("selection")
-        #             puts "Make your selection by ID"
-        #             response = gets.strip
-        #             print_overview(response)
-        #         elsif response.include?("less")
-        #             Api.last_page(input)
-        #             print_names
-        #         end
-        #     end
-        #     if Movie.page == Movie.pages
-        #         puts "Make a selection by ID"
-        #         response = gets.strip
-        #         print_overview(response)
-        #     end
-        # end
+        # case response
+        
+        # when "search"
     end
 
     def print_names
@@ -76,25 +51,45 @@ class CLI
     end
 
     def print_overview(id)
-        Movie.all.find{|movie| puts "#{movie.overview}" if movie.index.to_s == id}
+        # Movie.all.each{|movie| puts "#{movie.overview}" if movie.index.to_s == id}
+        Movie.find_by_id(id)
     end
 
     def print_cast(id)
-        Movie.all.find {|movie|
+        Movie.all.each {|movie|
             if movie.index.to_s == id
                 Api.movie_crew(movie.id)
-                Cast.all.find{|cast| puts "#{cast.character} = #{cast.actor}"}
+                Cast.all.each{|cast| puts "#{cast.character} = #{cast.actor}"}
             end
         }
     end
 
-    def recommended_movies
-        Movie.all.each{|m| puts "#{m.name.capitalize} (#{m.year}) #{m.overview}"}
+    def print_crew(id)
+        Movie.all.each do |movie|
+            if movie.index.to_s == id
+                Api.movie_crew(movie.id)
+                Crew.all.each{|crew| puts "#{crew.job} = #{crew.name}"}
+            end
+        end
+    end
+
+    def recommended_movies(id)
+        Movie.all.each do |movie|
+            if movie.index.to_s == id
+                binding.pry
+                Api.recommended_movie(movie.id)
+                # binding.pry
+                Movie.all.each do |m| 
+                    puts "#{m.name.capitalize} (#{m.year})"
+                    # puts "#{m.overview}"
+                end
+            end
+        end
     end
     
-    def response
-        response = gets.strip
-    end
+    # def response
+    #     response = gets.strip
+    # end
 
     def welcome
         puts "Welcome to MoviesDB CLI!"

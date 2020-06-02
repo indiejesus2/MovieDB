@@ -42,13 +42,28 @@ class Api
             Cast.new(character, actor)
         end
         data['crew'].each do |crew|
-            if crew["department"] == "Director" || crew["department"] == "Writing"
+            if crew["job"] == "Director" || crew["department"] == "Writing"
                 name = crew["name"]
                 job = crew["job"]
                 Crew.new(name, job)
             end
         end
     end
+
+    def self.recommended_movie(id)
+        Movie.destroy
+        res = RestClient.get(SECONDARY_URL + "#{id}/recommendations?api_key=" + KEY)
+        data = JSON.parse(res.body)
+        data['results'].each do |movie|
+            name = movie["title"]
+            id = movie["id"]
+            year = movie["release_date"].split('-').shift if movie["release_date"]
+            overview = movie["overview"]
+            popularity = movie["popularity"]
+            Movie.new(name, year, id, overview, popularity)
+        end
+    end
+
 
 end
 
@@ -57,6 +72,7 @@ end
 # ap Movie.all
 # binding.pry
 
-# Api.movie_crew(121)
+# Api.recommended_movie(121)
+# ap Movie.all
 # ap Cast.all
 # ap Crew.all
