@@ -13,71 +13,50 @@ class Api
     KEY = ENV["API_KEY"]
 
     def self.get_movies(string)
-        res = RestClient.get(BASE_URL + KEY + "&language=en-US&query=#{string}&include_adult=false")
-        data = JSON.parse(res.body)
-        Movie.pages=(data["total_pages"])
-        Movie.page=(data["page"])
-        data['results'].each do |movie|
-            # binding.pry
-            name = movie["title"]
-            id = movie["id"]
-            year = movie["release_date"].split('-').shift if movie["release_date"]
-            overview = movie["overview"]
-            Movie.new(name, year, id, overview) if year
-            # binding.pry
-        end       
+        page = 1
+        results = nil
+        until results == (Movie.all.length)
+            res = RestClient.get(BASE_URL + KEY + "&language=en-US&query=#{string}&include_adult=false&page=#{page}")
+            data = JSON.parse(res.body)
+            results = data["total_results"]
+            data['results'].each do |movie|
+                name = movie["title"]
+                id = movie["id"]
+                year = movie["release_date"].split('-').shift if movie["release_date"]
+                overview = movie["overview"]
+                popularity = movie["popularity"]
+                Movie.new(name, year, id, overview, popularity)
+            end
+                page+=1
+        end
+    end
+
+    def self.movie_crew(id)
+        # i = id.to_i
         # binding.pry
-    end
-
-    def self.next_page(string)
-        Movie.destroy
-        i = Movie.page
-        if i != Movie.pages
-            res = RestClient.get(BASE_URL + KEY + "&language=en-US&query=#{string}&include_adult=false&page=#{i+=1}")
-            data = JSON.parse(res.body)
-            Movie.page=(data["page"])
-            data['results'].each do |movie|
-                name = movie["title"]
-                id = movie["id"]
-                overview = movie["overview"]
-                year = movie["release_date"].split('-').shift if movie["release_date"]
-                Movie.new(name, year, id, overview) if year
-            end
-        end
-    end
-
-    def self.last_page(string)
-        Movie.destroy
-        i = Movie.page
-        if i != Movie.pages
-            res = RestClient.get(BASE_URL + KEY + "&language=en-US&query=#{string}&include_adult=false&page=#{i-=1}")
-            data = JSON.parse(res.body)
-            Movie.page=(data["page"])
-            data['results'].each do |movie|
-                name = movie["title"]
-                id = movie["id"]
-                overview = movie["overview"]
-                year = movie["release_date"].split('-').shift if movie["release_date"]
-                Movie.new(name, year, id, overview) if year
-            end
-        end
-    end
-
-    def self.find_movie(id)
-        Movie.destroy
-        res = RestClient.get(SECONDARY_URL + "#{id}/similar?api_key=" + KEY + "&language=en-US&include_adult=false")
+        res = RestClient.get(SECONDARY_URL + "#{id}/credits?api_key=" + KEY)
         data = JSON.parse(res.body)
-        data['results'].each do |movie|
-            name = movie["title"]
-            id = movie["id"]
-            overview = movie["overview"]
-            year = movie["release_date"].split('-').shift if movie["release_date"]
-            Movie.new(name, year, id, overview) if year
+        data['cast'].each do |cast|
+            character = cast["character"]
+            actor = cast["name"]
+            Cast.new(character, actor)
+        end
+        data['crew'].each do |crew|
+            if crew["department"] == "Director" || crew["department"] == "Writing"
+                name = crew["name"]
+                job = crew["job"]
+                Crew.new(name, job)
+            end
         end
     end
 
 end
 
-# clue = Api.get_movies("clue")
+# Api.get_movies("clue")
+# binding.pry
 # ap Movie.all
 # binding.pry
+
+# Api.movie_crew(121)
+# ap Cast.all
+# ap Crew.all

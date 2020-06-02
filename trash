@@ -1,0 +1,50 @@
+    def next_page(string)
+        i = (Movie.page + 1) 
+        res = RestClient.get(BASE_URL + KEY + "&language=en-US&query=#{string}&include_adult=false&page=#{i}")
+        data = JSON.parse(res.body)
+        Movie.page=(data["page"])
+        data['results'].each do |movie|
+            # binding.pry
+            name = movie["title"]
+            id = movie["id"]
+            overview = movie["overview"]
+            year = movie["release_date"].split('-').shift if movie["release_date"]
+            Movie.new(name, year, id, overview) if year
+        end
+    end
+
+    def self.next_page(string)
+        Movie.destroy
+        i = Movie.page
+        if i != Movie.pages
+            res = RestClient.get(BASE_URL + KEY + "&language=en-US&query=#{string}&include_adult=false&page=#{i+=1}")
+            data = JSON.parse(res.body)
+            Movie.page=(data["page"])
+            data['results'].each do |movie|
+                name = movie["title"]
+                id = movie["id"]
+                overview = movie["overview"]
+                year = movie["release_date"].split('-').shift if movie["release_date"]
+                Movie.new(name, year, id, overview) if year
+            end
+        end
+    end
+
+    def self.last_page(string)
+        Movie.destroy
+        i = Movie.page
+        if i != Movie.pages
+            res = RestClient.get(BASE_URL + KEY + "&language=en-US&query=#{string}&include_adult=false&page=#{i-=1}")
+            data = JSON.parse(res.body)
+            Movie.page=(data["page"])
+            data['results'].each do |movie|
+                name = movie["title"]
+                id = movie["id"]
+                overview = movie["overview"]
+                year = movie["release_date"].split('-').shift if movie["release_date"]
+                Movie.new(name, year, id, overview) if year
+            end
+        end
+    end
+
+    

@@ -1,50 +1,31 @@
 require 'pry'
 
 class Movie
-    attr_accessor :name, :id, :year, :pages, :overview
+    attr_accessor :name, :id, :year, :pages, :overview, :popularity, :index
     @@all = []
-    @@pages = 1
-    @@page = 1
 
-    def initialize(name, year, id = nil, overview)
+    def initialize(name, year = nil, id = nil, overview, popularity)
         @name = name
         @year = year
         @overview = overview
         @id = id
+        @popularity = popularity
+        @index = 0
         @@all << self
     end
 
-    # def pages=(pages)
-    #     @pages = pages
-    # end
-
-    def self.pages
-        @@pages
-    end
-
-    def self.pages=(pages)
-        @@pages = pages
-    end
-
-    def self.page
-        @@page
-    end
-
-    def self.page=(page)
-        @@page = page
-    end
-
-    def next_page
-        @@page += 1
-    end
-
-
     def self.all
-        @@all
+        @@all.sort_by{|movie| movie.popularity}.reverse
     end
 
     def self.index
-        all.map.with_index(1){|movie| movie.id}
+        i = 0
+        until i == Movie.all.length
+            self.all.each do |movie| 
+                i += 1
+                movie.index = i
+            end
+        end
     end
 
     def self.all_names
@@ -56,18 +37,41 @@ class Movie
     end
 
     def self.find_by_id(i)
-        all.find{|movie| puts "#{movie.overview}" if movie.id == i}
+        i = i.to_i
+        self.all.find{|movie| return movie.overview if movie.index. == i}
     end
 
-        # if current_list.include?(index)
-        #     puts id
-        #     binding.pry
-        # end
-    # end
+end
 
-    # def self.pages
-    #     @@pages
-    # end
+class Cast
+    attr_accessor :character, :actor
+    @@all = []
+
+    def initialize(character, actor)
+        @character = character
+        @actor = actor
+        @@all << self
+    end
+
+    def self.all
+        @@all
+    end
+
+end
+
+class Crew
+    attr_accessor :name, :job
+    @@all = []
+
+    def initialize(name, job)
+        @name = name
+        @job = job
+        @@all << self
+    end
+
+    def self.all
+        @@all
+    end
 
 end
 
