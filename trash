@@ -48,3 +48,16 @@
     end
 
     
+    # def print_crew(id)
+    #     Movie.all.each do |movie|
+    #         if movie.index.to_s == id
+    #             Api.movie_crew(movie.id)
+    #             Crew.all.each{|crew| puts "#{crew.job} = #{crew.name}"}
+    #         end
+    #     end
+    # end
+
+
+    def self.find_id(title)
+        self.all.find {|movie| return movie.id if movie.title == title}
+    end

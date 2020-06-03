@@ -21,20 +21,18 @@ class Api
             data = JSON.parse(res.body)
             results = data["total_results"]
             data['results'].each do |movie|
-                name = movie["title"]
+                title = movie["title"]
                 id = movie["id"]
                 year = movie["release_date"].split('-').shift if movie["release_date"]
                 overview = movie["overview"]
                 popularity = movie["popularity"]
-                Movie.new(name, year, id, overview, popularity)
+                Movie.new(title, year, id, overview, popularity)
             end
                 page+=1
         end
     end
 
     def self.movie_crew(id)
-        # i = id.to_i
-        # binding.pry
         Cast.destroy
         Crew.destroy
         res = RestClient.get(SECONDARY_URL + "#{id}/credits?api_key=" + KEY)
@@ -60,12 +58,12 @@ class Api
         res = RestClient.get(SECONDARY_URL + "#{id}/recommendations?api_key=" + KEY)
         data = JSON.parse(res.body)
         data['results'].each do |movie|
-            name = movie["title"]
+            title = movie["title"]
             id = movie["id"]
             year = movie["release_date"].split('-').shift if movie["release_date"]
             overview = movie["overview"]
             popularity = movie["popularity"]
-            Movie.new(name, year, id, overview, popularity)
+            Movie.new(title, year, id, overview, popularity)
         end
     end
 
@@ -75,12 +73,12 @@ class Api
         res = RestClient.get(SECONDARY_URL + "#{id}/similar?api_key=" + KEY)
         data = JSON.parse(res.body)
         data['results'].each do |movie|
-            name = movie["title"]
+            title = movie["title"]
             id = movie["id"]
             year = movie["release_date"].split('-').shift if movie["release_date"]
             overview = movie["overview"]
             popularity = movie["popularity"]
-            Movie.new(name, year, id, overview, popularity)
+            Movie.new(title, year, id, overview, popularity)
         end
     end
 

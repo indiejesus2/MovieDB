@@ -1,11 +1,11 @@
 require 'pry'
 
 class Movie
-    attr_accessor :name, :id, :year, :pages, :overview, :popularity, :index
+    attr_accessor :title, :id, :year, :pages, :overview, :popularity, :index
     @@all = []
 
-    def initialize(name, year = nil, id = nil, overview, popularity)
-        @name = name
+    def initialize(title, year = nil, id = nil, overview, popularity)
+        @title = title
         @year = year
         @overview = overview
         @id = id
@@ -19,25 +19,19 @@ class Movie
     end
 
     def self.index
-        i = 0
-        until i == Movie.all.length
-            self.all.each do |movie| 
-                i += 1
-                movie.index = i
-            end
-        end
+        self.all.each.with_index(1) {|movie, i| movie.index = i}
     end
 
     def self.all_names
-        all.map(&:name)
+        all.map(&:title)
     end
 
     def self.destroy
-        @@all = []
+        self.all.clear
     end
 
     def self.find_by_id(i)
-        self.all.each{|movie| return movie.name if movie.index.to_s == i}
+        self.all.each{|movie| return movie if movie.index.to_s == i}
     end
 
 end
@@ -58,13 +52,7 @@ class Cast
     end
 
     def self.index
-        i = 0
-        until i == Cast.all.length
-            self.all.each do |cast| 
-                i += 1
-                cast.index = i
-            end
-        end
+        self.all.each.with_index {|cast, i| cast.index = i}
     end
 
     def self.destroy
@@ -91,7 +79,12 @@ class Crew
     def self.destroy
         self.all.clear
     end
-    
+
+    def self.sort
+        # binding.pry
+        sorted = self.all.sort_by {|a| a.department}
+        # binding.pry
+    end
 
 end
 
