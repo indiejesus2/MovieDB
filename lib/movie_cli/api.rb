@@ -13,6 +13,7 @@ class Api
     KEY = ENV["API_KEY"]
 
     def self.get_movies(string)
+        Movie.destroy
         page = 1
         results = nil
         until results == (Movie.all.length)
@@ -34,6 +35,8 @@ class Api
     def self.movie_crew(id)
         # i = id.to_i
         # binding.pry
+        Cast.destroy
+        Crew.destroy
         res = RestClient.get(SECONDARY_URL + "#{id}/credits?api_key=" + KEY)
         data = JSON.parse(res.body)
         data['cast'].each do |cast|
@@ -44,15 +47,32 @@ class Api
         data['crew'].each do |crew|
             if crew["job"] == "Director" || crew["department"] == "Writing"
                 name = crew["name"]
+                department = crew["department"]
                 job = crew["job"]
-                Crew.new(name, job)
+                Crew.new(name, job, department)
             end
         end
     end
 
     def self.recommended_movie(id)
         Movie.destroy
+        # binding.pry
         res = RestClient.get(SECONDARY_URL + "#{id}/recommendations?api_key=" + KEY)
+        data = JSON.parse(res.body)
+        data['results'].each do |movie|
+            name = movie["title"]
+            id = movie["id"]
+            year = movie["release_date"].split('-').shift if movie["release_date"]
+            overview = movie["overview"]
+            popularity = movie["popularity"]
+            Movie.new(name, year, id, overview, popularity)
+        end
+    end
+
+    def self.similar_movie(id)
+        Movie.destroy
+        # binding.pry
+        res = RestClient.get(SECONDARY_URL + "#{id}/similar?api_key=" + KEY)
         data = JSON.parse(res.body)
         data['results'].each do |movie|
             name = movie["title"]

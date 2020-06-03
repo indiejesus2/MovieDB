@@ -33,44 +33,65 @@ class Movie
     end
 
     def self.destroy
-        all.clear
+        @@all = []
     end
 
     def self.find_by_id(i)
-        self.all.each{|movie| puts movie.overview if movie.index.to_s == i}
+        self.all.each{|movie| return movie.name if movie.index.to_s == i}
     end
 
 end
 
 class Cast
-    attr_accessor :character, :actor
+    attr_accessor :character, :actor, :index
     @@all = []
 
     def initialize(character, actor)
         @character = character
         @actor = actor
+        @index = 0
         @@all << self
     end
 
     def self.all
         @@all
+    end
+
+    def self.index
+        i = 0
+        until i == Cast.all.length
+            self.all.each do |cast| 
+                i += 1
+                cast.index = i
+            end
+        end
+    end
+
+    def self.destroy
+        self.all.clear
     end
 
 end
 
 class Crew
-    attr_accessor :name, :job
+    attr_accessor :name, :job, :department
     @@all = []
 
-    def initialize(name, job)
+    def initialize(name, job, department)
         @name = name
         @job = job
+        @department = department
         @@all << self
     end
 
     def self.all
         @@all
     end
+
+    def self.destroy
+        self.all.clear
+    end
+    
 
 end
 

@@ -5,39 +5,21 @@ require_relative "./api.rb"
 # Bundler.require(:default)
 
 class CLI
+
     def run
         welcome
         main
     end
 
     def main
-        input = gets.strip
-        Api.get_movies(input)
-        print_names
-        selection
-        id = gets.strip
-        menu
-        response = gets.strip
-
-
-        case response
-        when "plot"
-            print_overview(id)
-        when "cast"
-            print_cast(id)
-        when "crew"
-            print_crew(id)
-        when "recommendations"
-            recommended_movies(id)
-        when "similar movie"
-            similar_movies(id)
+        Movie.destroy
+        # binding.pry
+        input = ' '
+        while input != "exit"
+            selection
+            id = gets.strip
+            menu(id)
         end
-        # end
-        continue
-        response
-        # case response
-        
-        # when "search"
     end
 
     def print_names
@@ -45,23 +27,32 @@ class CLI
         # i = 1
         Movie.all.each do |movie|
             if movie.index <= 20
-                puts "#{movie.index}.) #{movie.name.capitalize} (#{movie.year})"
+                puts "#{movie.index}.) #{movie.name} (#{movie.year})"
             end
         end
     end
 
     def print_overview(id)
-        # Movie.all.each{|movie| puts "#{movie.overview}" if movie.index.to_s == id}
-        Movie.find_by_id(id)
+        Movie.all.each{|movie| puts "#{movie.overview}" if movie.index.to_s == id}
     end
 
-    def print_cast(id)
-        Movie.all.each {|movie|
+    def print_cast_and_crew(id)
+        Movie.all.each do |movie|
             if movie.index.to_s == id
                 Api.movie_crew(movie.id)
-                Cast.all.each{|cast| puts "#{cast.character} = #{cast.actor}"}
+                Crew.all.each do |crew|
+                    puts "Directed by #{crew.name}." if crew.job == "Director"
+                    puts "Written by #{crew.name}." if crew.department == "Writing"
+                end
+                puts " "
+                Cast.index
+                Cast.all.each do |cast|
+                    if cast.index <= 20
+                        puts "#{cast.character} played by #{cast.actor}."
+                    end
+                end
             end
-        }
+        end
     end
 
     def print_crew(id)
@@ -76,13 +67,31 @@ class CLI
     def recommended_movies(id)
         Movie.all.each do |movie|
             if movie.index.to_s == id
-                binding.pry
                 Api.recommended_movie(movie.id)
-                # binding.pry
-                Movie.all.each do |m| 
-                    puts "#{m.name.capitalize} (#{m.year})"
-                    # puts "#{m.overview}"
-                end
+                Movie.index
+            end
+        end
+        Movie.all.each do |m|
+            if m.index <= 5
+                puts "#{m.name} (#{m.year})"
+                puts "#{m.overview}"
+                puts " "
+            end
+        end
+    end
+
+    def similar_movies(id)
+        Movie.all.each do |movie|
+            if movie.index.to_s == id
+                Api.similar_movie(movie.id)
+                Movie.index
+            end
+        end
+        Movie.all.each do |m|
+            if m.index <= 5
+                puts "#{m.name} (#{m.year})"
+                puts "#{m.overview}"
+                puts " "
             end
         end
     end
@@ -93,19 +102,38 @@ class CLI
 
     def welcome
         puts "Welcome to MoviesDB CLI!"
-        puts "Please enter movie title"
     end
 
     def selection
+        puts "Please enter movie title"
+        input = gets.strip
+        Api.get_movies(input)
+        print_names
         puts "Please make a selection"
     end
 
-    def menu
-        puts "Would you like plot, cast, crew, or recommendations based on your selection?"
+    def menu(id)
+        selection = Movie.find_by_id(id)
+        puts "Would you like the plot, cast & crew, similar movies, or recommendations based on #{selection}? Or exit?"
+        response = gets.strip.downcase
+        case response
+        when "plot"
+            print_overview(id)
+        when "cast and crew"
+            print_cast_and_crew(id)
+        when "recommendations"
+            recommended_movies(id)
+        when "similar movies"
+            similar_movies(id)
+        else
+            input = "exit"
+            goodbye
+
+        end
     end
 
-    def continue
-        puts "Search again or exit?"
+    def goodbye
+        puts "Thanks for visiting! Enjoy your movie!"
     end
 
     def plot(response)
