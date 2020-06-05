@@ -9,7 +9,6 @@ class CLI
     end
 
     def main
-        Movie.destroy
         input = ' '
         while input != "exit"
             selection
@@ -19,8 +18,8 @@ class CLI
     end
 
     def print_names
-        Movie.index
-        Movie.all.each do |movie|
+        Movie.sort.each.with_index(1) do |movie, i|
+            movie.index = i
             if movie.index <= 20
                 puts "#{movie.index}.) #{movie.title} (#{movie.year})"
             end
@@ -35,11 +34,12 @@ class CLI
         Api.movie_crew(id)
         Crew.sort.each do |crew|
             puts "Directed by #{crew.name}." if crew.job == "Director"
-            puts "#{crew.job} by #{crew.name}." if crew.department == "Writing"
+            puts "Screenplay by #{crew.name}." if crew.job.include?("Screenplay")
+            puts "#{crew.job} by #{crew.name}." if crew.department == "Writing" && !crew.job.include?("Screenplay")
         end
         puts " "
-        Cast.index
-        Cast.all.each do |cast|
+        Cast.all.each.with_index(1) do |cast, i| 
+            cast.index = i
             if cast.index <= 20
                 puts "#{cast.character} played by #{cast.actor}."
             end
@@ -49,20 +49,17 @@ class CLI
 
     def recommended_movies(id)
         Api.recommended_movie(id)
-        Movie.index
-        Movie.all.each do |m|
-            if m.index <= 5
-                puts " "
-                puts "#{m.title} (#{m.year})"
-                puts "#{m.overview}"
-            end
-        end
+        plots
     end
 
     def similar_movies(id)
         Api.similar_movie(id)
-        Movie.index
-        Movie.all.each do |m|
+        plots
+    end
+
+    def plots
+        Movie.all.each.with_index(1) do |m, i|
+            m.index = i
             if m.index <= 5
                 puts " "
                 puts "#{m.title} (#{m.year})"
@@ -72,7 +69,7 @@ class CLI
     end
 
     def welcome
-        puts "Welcome to MoviesDB CLI!"
+        puts "Welcome to MovieDB CLI!"
     end
 
     def selection
@@ -89,15 +86,15 @@ class CLI
     def menu(i)
         selection = Movie.find_by_id(i)
         puts "Would you like the plot, cast & crew, similar movies, or recommendations based on #{selection.title}? Or exit?"
-        response = gets.strip.downcase
+        input = gets.strip.downcase
         puts " "
-        if response.include?("plot")
+        if input.include?("plot")
             print_overview(selection.id)
-        elsif response.include?("cast") || response.include?("crew")
+        elsif input.include?("cast") || input.include?("crew")
             print_cast_and_crew(selection.id)
-        elsif response.include?("recommend")
+        elsif input.include?("recommend")
             recommended_movies(selection.id)
-        elsif response.include?("similar")
+        elsif input.include?("similar")
             similar_movies(selection.id)
         elsif "exit"
             goodbye
@@ -112,7 +109,3 @@ class CLI
     end
 
 end
-
-# binding.pry
-
-# CLI.new.run

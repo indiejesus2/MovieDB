@@ -15,19 +15,15 @@ class Movie
     end
 
     def self.all
-        @@all.sort_by{|movie| movie.popularity}.reverse
-    end
-
-    def self.index
-        self.all.each.with_index(1) {|movie, i| movie.index = i}
-    end
-
-    def self.all_names
-        all.map(&:title)
+        @@all
     end
 
     def self.destroy
         self.all.clear
+    end
+
+    def self.sort
+        self.all.sort_by{|movie| movie.popularity}.reverse
     end
 
     def self.find_by_id(i)
@@ -49,10 +45,6 @@ class Cast
 
     def self.all
         @@all
-    end
-
-    def self.index
-        self.all.each.with_index {|cast, i| cast.index = i}
     end
 
     def self.destroy
@@ -81,9 +73,16 @@ class Crew
     end
 
     def self.sort
-        # binding.pry
-        sorted = self.all.sort_by {|a| a.department}
-        # binding.pry
+        self.all.sort do |a| 
+            case
+            when a.job.include?("Director")
+                -1
+            when a.job.include?("Screenplay")
+                0
+            else
+                1
+            end
+        end
     end
 
 end

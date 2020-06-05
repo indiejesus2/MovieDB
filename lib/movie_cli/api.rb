@@ -11,7 +11,7 @@ class Api
     BASE_URL = "https://api.themoviedb.org/3/search/movie?api_key="
     SECONDARY_URL = "https://api.themoviedb.org/3/movie/"
     KEY = ENV["API_KEY"]
-
+    
     def self.get_movies(string)
         Movie.destroy
         page = 1
@@ -54,7 +54,6 @@ class Api
 
     def self.recommended_movie(id)
         Movie.destroy
-        # binding.pry
         res = RestClient.get(SECONDARY_URL + "#{id}/recommendations?api_key=" + KEY)
         data = JSON.parse(res.body)
         data['results'].each do |movie|
