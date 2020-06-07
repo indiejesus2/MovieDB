@@ -6,6 +6,10 @@ Installation
 
 $ gem install MovieDB
 
+Usage
+
+Type in bin/run and follow the preceding prompts.
+
 The CLI will first greet the user, and it will ask for a movie title. Specific movie titles will yield better results, keywords are viable alternatives as well.
 
 After the user inputs a movie title or keyword, a list of 20 movie titles will be returned in numbered order followed by the year the film was released. The list is ordered by popularity of film. the user will then be prompted to select a movie by it's index number.
