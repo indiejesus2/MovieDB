@@ -8,9 +8,9 @@ $ gem install MovieDB
 
 The CLI will first greet the user, and it will ask for a movie title. Specific movie titles will yield better results, keywords are viable alternatives as well.
 
-After the user inputs a movie title or keyword, a list of 20 movie titles will be returned in numbered order followed by the year the film was released. The list is ordered by popularity of film. he user will then be prompted to select a movie by it's index number.
+After the user inputs a movie title or keyword, a list of 20 movie titles will be returned in numbered order followed by the year the film was released. The list is ordered by popularity of film. the user will then be prompted to select a movie by it's index number.
 
-THe user will then be given options to apply to their selected movie. The options are "plot", "cast & crew", "similar movies", and "recommendations". The movie the user selected will also be included with the menu options to confirm that the correct title was chosen.
+The user will then be given options to apply to their selected movie. The options are "plot", "cast & crew", "similar movies", and "recommendations". The movie the user selected will also be included with the menu options to confirm that the correct title was chosen.
 
 Plot
 
@@ -29,4 +29,8 @@ If similar movies or recommendations are chosen, the program will print five mov
 Exit
 
 The CLI is built to repeat this process until the user types exit.
+
+License
+
+This gem is an open source under the terms of the MIT License.
 
