@@ -8,7 +8,7 @@ $ gem install MovieDB
 
 Usage
 
-Type in bin/run and follow the preceding prompts.
+Type in bin/run and follow the proceeding prompts.
 
 The CLI will first greet the user, and it will ask for a movie title. Specific movie titles will yield better results, keywords are viable alternatives as well.
 
