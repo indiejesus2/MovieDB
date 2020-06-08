@@ -3,6 +3,7 @@ require 'pry'
 class Movie
     attr_accessor :title, :id, :year, :pages, :overview, :popularity, :index
     @@all = []
+    @@recommended = []
 
     def initialize(title, year = nil, id = nil, overview, popularity)
         @title = title
@@ -11,6 +12,9 @@ class Movie
         @id = id
         @popularity = popularity
         @index = 0
+    end
+
+    def save
         @@all << self
     end
 
@@ -23,11 +27,28 @@ class Movie
     end
 
     def self.sort
+        # binding.pry
         self.all.sort_by{|movie| movie.popularity}.reverse
     end
 
     def self.find_by_id(i)
-        self.all.each{|movie| return movie if movie.index.to_s == i}
+        self.all.each{|movie| return movie if movie.index == i.to_i}
+    end
+
+    def recommend
+        @@recommended << self
+    end
+
+    def self.recommended
+        @@recommended
+    end
+
+    def self.destroy_recommended
+        @@recommended.clear
+    end
+
+    def similar
+        @@similar << self
     end
 
 end

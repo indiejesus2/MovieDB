@@ -1,10 +1,10 @@
-MovieDB CLI
+MoviesCLI
 
 The CLI provides basic interaction with TheMovieDatabase (TMDB) that will allow users to look up plots and cast information for a selected movie. The MoviesDB CLI also offers similar movies and recommendations based on the movie.
 
-Installation
+Usage
 
-$ gem install MovieDB
+Type in bin/run and follow the proceeding prompts.
 
 The CLI will first greet the user, and it will ask for a movie title. Specific movie titles will yield better results, keywords are viable alternatives as well.
 
@@ -22,11 +22,15 @@ If the user would like an abridged version of the movie credits, cast & crew pro
 
 Similar Movies & Recommendations
 
-A couple neat features included with TMDB is similar movies and recommendations based on a movie. While they both seem very much alike at first, similar movies are more comprised of sequals and recommendations are based on a film's multiple genres like romance and comedy or fantasy and sci-fi.
+A couple neat features included with TMDB is similar movies and recommendations based on a movie. While they both seem very much alike at first, similar movies are based on a film's multiple genres like romance and comedy or fantasy and sci-fi, and recommendations are more comprised of sequels or similar film types such as animation or .
 
 If similar movies or recommendations are chosen, the program will print five movie titles along with the year it was released. It will also provide a brief plot synopsis.
 
 Exit
 
 The CLI is built to repeat this process until the user types exit.
+
+License
+
+This gem is an open source under the terms of the MIT License.
 

@@ -2,6 +2,7 @@ require_relative "./movie.rb"
 require_relative "./api.rb"
 
 class CLI
+    @@id = 0
 
     def run
         welcome
@@ -10,10 +11,10 @@ class CLI
 
     def main
         input = ' '
-        while input != "exit"
-            selection
-            id = gets.strip
-            menu(id)
+        movie_titles
+        selection
+        while input != "exit"    
+            menu(@@id)
         end
     end
 
@@ -58,7 +59,7 @@ class CLI
     end
 
     def plots
-        Movie.all.each.with_index(1) do |m, i|
+        Movie.recommended.each.with_index(1) do |m, i|
             m.index = i
             if m.index <= 5
                 puts " "
@@ -72,40 +73,76 @@ class CLI
         puts "Welcome to MovieDB CLI!"
     end
 
-    def selection
-        puts " "
+    def movie_titles
+        # puts " "
         puts "Please enter movie title"
         input = gets.strip
         Api.get_movies(input)
         puts " "
-        print_names
-        puts " "
-        puts "Please make a selection"
+        if Movie.all.length > 0
+            print_names
+        else
+            movie_error
+        end
     end
 
-    def menu(i)
-        selection = Movie.find_by_id(i)
-        puts "Would you like the plot, cast & crew, similar movies, or recommendations based on #{selection.title}? Or exit?"
+    def selection
+        puts " "
+        puts "Please make a selection"
+        id = gets.strip.to_i
+        if id <= 20 && id > 0
+            @@id = id
+        else
+            selection_error
+        end
+    end
+
+    def menu(id)
+        movie = Movie.find_by_id(id)
+        # binding.pry
+        puts "Please enter plot, cast & crew, similar movies, or recommendations based on #{movie.title}? Or Search again or Exit?"
         input = gets.strip.downcase
         puts " "
         if input.include?("plot")
-            print_overview(selection.id)
+            print_overview(movie.id)
         elsif input.include?("cast") || input.include?("crew")
-            print_cast_and_crew(selection.id)
+            print_cast_and_crew(movie.id)
         elsif input.include?("recommend")
-            recommended_movies(selection.id)
+            recommended_movies(movie.id)
         elsif input.include?("similar")
-            similar_movies(selection.id)
-        elsif "exit"
+            similar_movies(movie.id)
+            # binding.pry
+        elsif input.include?("exit")
             goodbye
+        elsif input.include?("search")
+            main
         else
-            puts "Try again"
+            menu_error
         end
+        puts " "
     end
 
     def goodbye
         puts "Thanks for visiting! Enjoy your movie!"
-        abort
+        exit
+    end
+
+    def movie_error
+        puts "Try again"
+        puts " "
+        main
+    end
+
+    def selection_error
+        puts "Try again"
+        puts " "
+        selection
+    end
+
+    def menu_error
+        puts "Try again"
+        puts " "
+        menu(@@id)
     end
 
 end
