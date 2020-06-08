@@ -39,4 +39,3 @@ Pull requests are encouraged on [GitHub](https://github.com/indiejesus2/MovieDB)
 ## License
 
 This gem is an open source under the terms of the [MIT License](https://github.com/indiejesus2/MovieDB/blob/master/LICENSE).
-
