@@ -63,14 +63,12 @@ class Api
             year = movie["release_date"].split('-').shift if movie["release_date"]
             overview = movie["overview"]
             popularity = movie["popularity"]
-            recommend = Movie.new(title, year, id, overview, popularity)
-            recommend.recommend
+            suggestion = Movie.new(title, year, id, overview, popularity)
+            suggestion.recommend
         end
     end
 
     def self.similar_movie(id)
-        # Movie.destroy
-        # binding.pry
         Movie.destroy_recommended
         res = RestClient.get(SECONDARY_URL + "#{id}/similar?api_key=" + KEY)
         data = JSON.parse(res.body)
@@ -80,8 +78,8 @@ class Api
             year = movie["release_date"].split('-').shift if movie["release_date"]
             overview = movie["overview"]
             popularity = movie["popularity"]
-            same = Movie.new(title, year, id, overview, popularity)
-            same.recommend
+            similar = Movie.new(title, year, id, overview, popularity)
+            similar.recommend
         end
     end
 

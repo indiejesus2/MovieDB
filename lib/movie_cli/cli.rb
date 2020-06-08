@@ -74,7 +74,6 @@ class CLI
     end
 
     def movie_titles
-        # puts " "
         puts "Please enter movie title"
         input = gets.strip
         Api.get_movies(input)
@@ -99,7 +98,6 @@ class CLI
 
     def menu(id)
         movie = Movie.find_by_id(id)
-        # binding.pry
         puts "Please enter plot, cast & crew, similar movies, or recommendations based on #{movie.title}? Or Search again or Exit?"
         input = gets.strip.downcase
         puts " "
@@ -111,7 +109,6 @@ class CLI
             recommended_movies(movie.id)
         elsif input.include?("similar")
             similar_movies(movie.id)
-            # binding.pry
         elsif input.include?("exit")
             goodbye
         elsif input.include?("search")
