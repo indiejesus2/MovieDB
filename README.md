@@ -24,7 +24,7 @@ If the user would like an abridged version of the movie credits, cast & crew pro
 
 ### Similar Movies & Recommendations
 
-A couple neat features included with TMDB is similar movies and recommendations based on a movie. While they both seem very much alike at first, similar movies are based on a film's multiple genres like romance and comedy or fantasy and sci-fi, and recommendations are more comprised of sequels or similar film types such as animation or .
+A couple neat features included with TMDB is similar movies and recommendations based on a movie. They both seem very much alike at first, similar movies are based on a film's keywords and multiple genres like romance and comedy or fantasy and sci-fi, while recommendations are more comprised of sequels or similar film types such as animation or anime.
 
 If similar movies or recommendations are chosen, the program will print five movie titles along with the year it was released. It will also provide a brief plot synopsis.
 
