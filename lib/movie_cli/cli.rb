@@ -70,7 +70,7 @@ class CLI
     end
 
     def welcome
-        puts "Welcome to MovieDB CLI!"
+        puts "Welcome to MoviesCLI!"
     end
 
     def movie_titles
