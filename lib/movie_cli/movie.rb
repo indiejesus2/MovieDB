@@ -1,17 +1,17 @@
 require 'pry'
 
 class Movie
-    attr_accessor :title, :id, :year, :pages, :overview, :popularity, :index
+    attr_accessor :title, :id, :year, :overview, :popularity, :index
+
     @@all = []
     @@recommended = []
 
-    def initialize(title, year = nil, id = nil, overview, popularity)
-        @title = title
-        @year = year
-        @overview = overview
-        @id = id
-        @popularity = popularity
-        @index = 0
+    def initialize(movie)
+        @title = movie[:title]
+        @year = movie[:year]
+        @overview = movie[:overview]
+        @id = movie[:id]
+        @popularity = movie[:popularity]
     end
 
     def save
@@ -27,7 +27,6 @@ class Movie
     end
 
     def self.sort
-        # binding.pry
         self.all.sort_by{|movie| movie.popularity}.reverse
     end
 

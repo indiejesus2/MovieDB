@@ -8,8 +8,7 @@ require 'dotenv/load'
 require_relative './movie.rb'
 
 class Api
-    BASE_URL = "https://api.themoviedb.org/3/search/movie?api_key="
-    SECONDARY_URL = "https://api.themoviedb.org/3/movie/"
+    BASE_URL = "https://api.themoviedb.org/3/"
     KEY = ENV["API_KEY"]
 
     def self.get_movies(string)
@@ -17,17 +16,15 @@ class Api
         page = 1
         results = nil
         until results == (Movie.all.length)
-            res = RestClient.get(BASE_URL + KEY + "&language=en-US&query=#{string}&include_adult=false&page=#{page}")
+            res = RestClient.get(BASE_URL + "search/movie?api_key=" + KEY + "&language=en-US&query=#{string}&include_adult=false&page=#{page}")
             data = JSON.parse(res.body)
             results = data["total_results"]
             data['results'].each do |movie|
-                title = movie["title"]
-                id = movie["id"]
-                year = movie["release_date"].split('-').shift if movie["release_date"]
-                overview = movie["overview"]
-                popularity = movie["popularity"]
-                movies = Movie.new(title, year, id, overview, popularity)
-                movies.save
+                movie_data = movie_info(movie)
+                movie = Movie.new(
+                    movie_data
+                    )
+                movie.save
             end
                 page+=1
         end
@@ -36,7 +33,7 @@ class Api
     def self.movie_crew(id)
         Cast.destroy
         Crew.destroy
-        res = RestClient.get(SECONDARY_URL + "#{id}/credits?api_key=" + KEY)
+        res = RestClient.get(BASE_URL + "movie/#{id}/credits?api_key=" + KEY)
         data = JSON.parse(res.body)
         data['cast'].each do |cast|
             character = cast["character"]
@@ -55,34 +52,35 @@ class Api
 
     def self.recommended_movie(id)
         Movie.destroy_recommended
-        res = RestClient.get(SECONDARY_URL + "#{id}/recommendations?api_key=" + KEY)
+        res = RestClient.get(BASE_URL + "movie/#{id}/recommendations?api_key=" + KEY)
         data = JSON.parse(res.body)
         data['results'].each do |movie|
-            title = movie["title"]
-            id = movie["id"]
-            year = movie["release_date"].split('-').shift if movie["release_date"]
-            overview = movie["overview"]
-            popularity = movie["popularity"]
-            suggestion = Movie.new(title, year, id, overview, popularity)
+            movie_data = movie_info(movie)
+            suggestion = Movie.new(movie_data)
             suggestion.recommend
         end
     end
 
     def self.similar_movie(id)
         Movie.destroy_recommended
-        res = RestClient.get(SECONDARY_URL + "#{id}/similar?api_key=" + KEY)
+        res = RestClient.get(BASE_URL + "movie/#{id}/similar?api_key=" + KEY)
         data = JSON.parse(res.body)
         data['results'].each do |movie|
-            title = movie["title"]
-            id = movie["id"]
-            year = movie["release_date"].split('-').shift if movie["release_date"]
-            overview = movie["overview"]
-            popularity = movie["popularity"]
-            similar = Movie.new(title, year, id, overview, popularity)
+            movie_data = movie_info(movie)
+            similar = Movie.new(movie_data)
             similar.recommend
         end
     end
 
+    def self.movie_info(movie)
+        movie_data = {}
+        movie_data[:title] = movie["title"]
+        movie_data[:id] = movie["id"]
+        movie_data[:year] = movie["release_date"].split('-').shift if movie["release_date"]
+        movie_data[:overview] = movie["overview"]
+        movie_data[:popularity] = movie["popularity"]
+        return movie_data
+    end
 
 end
 

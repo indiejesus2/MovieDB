@@ -77,6 +77,7 @@ class CLI
         puts "Please enter movie title"
         input = gets.strip
         Api.get_movies(input)
+
         puts " "
         if Movie.all.length > 0
             print_names
@@ -89,7 +90,7 @@ class CLI
         puts " "
         puts "Please make a selection"
         id = gets.strip.to_i
-        if id <= 20 && id > 0
+        if id.between?(1, 20)
             @@id = id
         else
             selection_error
